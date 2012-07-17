@@ -27,6 +27,9 @@ bool InteractionContainer::insert(const shared_ptr<Interaction>& i){
 	if(!b1->intrs.insert(Body::MapId2IntrT::value_type(id2,i)).second) return false; // already exists
 	if(!b2->intrs.insert(Body::MapId2IntrT::value_type(id1,i)).second) return false; 
 	
+	b1->checkIntrs=true;
+	b2->checkIntrs=true;
+	
 	linIntrs.resize(++currSize); // currSize updated
 	linIntrs[currSize-1]=i; // assign last element
 	i->linIx=currSize-1; // store the index back-reference in the interaction (so that it knows how to erase/move itself)
@@ -69,11 +72,12 @@ bool InteractionContainer::erase(Body::id_t id1,Body::id_t id2, int linPos){
 			linIx=I->second->linIx;
 			assert(linIx==linPos);
 			//erase from body, we also erase from linIntrs below
-			b1->intrs.erase(I);}
-			if (b2) { 
-				Body::MapId2IntrT::iterator I(b2->intrs.find(id1));
-				if(not(I==b1->intrs.end())) { b2->intrs.erase(I); }
-			}
+			b1->intrs.erase(I); b1->checkIntrs=true; 
+		}
+		if (b2) { 
+			Body::MapId2IntrT::iterator I(b2->intrs.find(id1));
+			if(not(I==b1->intrs.end())) { b2->intrs.erase(I); b2->checkIntrs=true; }
+		}
 	}
 	
 	if(linIx<0) {
