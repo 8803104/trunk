@@ -131,4 +131,8 @@ class Shop{
 		//! Function to compute fabric tensor of periodic cell
 		static void fabricTensor(Real& Fmean, Matrix3r& fabric, Matrix3r& fabricStrong, Matrix3r& fabricWeak, bool splitTensor=false, bool revertSign=false, Real thresholdForce=NaN);
 		static py::tuple fabricTensor(bool splitTensor=false, bool revertSign=false, Real thresholdForce=NaN);
+		
+		//! Get a list of body-ids, which contacts the given body;
+		static py::list getBodyIdsContacts(Body::id_t bodyID=-1);
+
 };
